@@ -1,5 +1,7 @@
 package recipebook.user;
 
+import javax.persistence.*;
+
 @Entity
 @Table(name = "role")
 public class Role {

@@ -2,6 +2,7 @@ package recipebook.ingredient;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import recipebook.recipe.Recipe;
@@ -22,6 +23,7 @@ public class IngredientController {
     @Autowired
     RecipeService recipeService;
 
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
     public List<Ingredient> getIngredients() {
         return ingredientService.findAll();

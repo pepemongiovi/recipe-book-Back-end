@@ -1,5 +1,7 @@
 package recipebook.user;
 
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
@@ -21,10 +23,17 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    @Column(name = "user_role")
     private Set<Role> roles;
+
+    public User(User user) {
+        this.id = user.getId();
+        this.email = user.getEmail();
+        this.name = user.getName();
+        this.password = user.getPassword();
+        this.roles = user.getRoles();
+    }
 
     public User() { }
 

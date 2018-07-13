@@ -3,8 +3,6 @@ package recipebook.ingredient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import recipebook.ingredient.IngredientRepository;
-import recipebook.ingredient.Ingredient;
 
 import java.util.List;
 import java.util.Optional;
