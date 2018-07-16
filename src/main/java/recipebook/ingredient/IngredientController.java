@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/ingredients")
 public class IngredientController {
@@ -23,7 +23,6 @@ public class IngredientController {
     @Autowired
     RecipeService recipeService;
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping
     public List<Ingredient> getIngredients() {
         return ingredientService.findAll();

@@ -1,54 +1,70 @@
 package recipebook.user;
 
+import io.swagger.annotations.SecurityDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
+import io.swagger.annotations.ApiOperation;
+import recipebook.responses.ResponseConflict;
+import recipebook.responses.ResponseCreated;
+import recipebook.exceptions.InvalidAttributeException;
+import javax.xml.ws.Response;
 import java.util.List;
-import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/users")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
+@RequestMapping(value = "/user")
 public class UserController {
 
+    private UserService userService;
+
     @Autowired
-    UserService userService;
-
-    @GetMapping
-    public List<User> getUsers() {
-        return userService.findAll();
-    }
-
-    @GetMapping("{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        Optional<User> user = userService.findById(id);
-
-        if(user.isPresent()) return ResponseEntity.ok().body(user.get());
-        else return ResponseEntity.notFound().build();
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     @PostMapping
-    public User createUser(@Valid @RequestBody User user) {
-        return userService.save(user);
-    }
+    @ApiOperation(value = "Create a new user")
+    public ResponseEntity<Response> create(@RequestBody User user) {
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<User> deleteUser(@PathVariable Long id) {
-        Optional<User> user = userService.findById(id);
-
-        if(user.isPresent()){
-            userService.deleteById(id);
-            return ResponseEntity.ok().body(user.get());
+        if (user.getName() == null) {
+            throw new InvalidAttributeException("Bad Request, Missing parameter 'name'");
         }
-        else return ResponseEntity.notFound().build();
+
+        if (user.getPassword() == null) {
+            throw new InvalidAttributeException("Bad Request, Missing parameter 'password'!");
+        }
+
+        if (user.getEmail() == null) {
+            throw new InvalidAttributeException("Bad Request, Missing parameter 'email' or invalid email sent!");
+        }
+
+        if (emailExist(user.getEmail())) {
+            return new ResponseEntity(new ResponseConflict(
+                    String.format("There is an account with that email address: '%s'",
+                            user.getEmail())), HttpStatus.CONFLICT);
+        } else {
+            this.userService.create(user);
+            return new ResponseEntity(new ResponseCreated("User account created successfully", user), HttpStatus.CREATED);
+        }
     }
 
-    @PutMapping("{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        Optional<User> user = userService.findById(id);
+    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Delete a user with a given id")
+    public ResponseEntity delete(@RequestHeader("Authorization") String token, @PathVariable("id") Long id){
+        return new ResponseEntity(userService.removeById(id), HttpStatus.OK);
+    }
 
-        if(!user.isPresent()) return ResponseEntity.notFound().build();
-        else return ResponseEntity.ok().body(userService.save(updatedUser));
+    @GetMapping
+    @ApiOperation(value = "Return all users registered")
+    public List<User> getUsers(@RequestHeader(value = "Authorization") String token) {
+        return this.userService.getUsers();
+    }
+
+    private boolean emailExist(String email) {
+        User user = this.userService.findByEmail(email);
+
+        return user != null;
     }
 }

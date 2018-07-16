@@ -1,35 +1,81 @@
 package recipebook.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import recipebook.util.Crud;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements Crud<User> {
+
+    private UserRepository userRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    UserRepository userRepository;
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
-    @Transactional(readOnly = true)
-    public List<User> findAll() {
+    @Override
+    public User create(Object t) {
+        if(t instanceof User) {
+            User user = new User();
+            user.setEmail(((User) t).getEmail());
+            user.setName(((User) t).getName());
+            user.setPassword(bCryptPasswordEncoder.encode(((User) t).getPassword()));
+
+            return userRepository.save(user);
+        }
+        return null;
+    }
+
+    public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    @Transactional(readOnly = true)
-    public Optional<User> findById(Long id) {
-        return userRepository.findById(id);
+    @Override
+    public User getById(Long id) {
+        return null;
     }
 
-    @Transactional
-    public User save(User user) {
-        return userRepository.save(user);
+
+    @Override
+    public boolean removeById(Long id) {
+        if(userRepository.findById(id) != null){
+            userRepository.deleteById(id);
+            return true;
+        }
+
+        return false;
     }
 
-    @Transactional
-    public void deleteById(Long id) {
-        userRepository.deleteById(id);
+    @Override
+    public void removeAll() {
+        this.userRepository.deleteAll();
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public boolean removeByEmail(String email){
+        User user = findByEmail(email);
+        if(user != null){
+            userRepository.delete(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public User update(User t1, User t2) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
 

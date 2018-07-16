@@ -10,7 +10,7 @@ import javax.xml.ws.Response;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 @RequestMapping("/recipes")
 @RestController
 public class RecipeController {
@@ -61,7 +61,18 @@ public class RecipeController {
 
         if(!recipe.isPresent()) return ResponseEntity.notFound().build();
         else{
-            recipeService.setIngredientsVisible(recipe.get());
+            recipeService.setIngredientsVisibility(recipe.get(), true);
+            return ResponseEntity.ok().build();
+        }
+    }
+
+    @PutMapping("{id}/remove-ingredients")
+    public ResponseEntity<Recipe> removeIngredientsFromShoppingList(@PathVariable Long id) {
+        Optional<Recipe> recipe = recipeService.findById(id);
+
+        if(!recipe.isPresent()) return ResponseEntity.notFound().build();
+        else{
+            recipeService.setIngredientsVisibility(recipe.get(), false);
             return ResponseEntity.ok().build();
         }
     }

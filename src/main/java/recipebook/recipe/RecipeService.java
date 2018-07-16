@@ -21,10 +21,10 @@ public class RecipeService {
     IngredientService ingredientService;
 
     @Transactional
-    public void setIngredientsVisible(Recipe recipe) {
+    public void setIngredientsVisibility(Recipe recipe, boolean visibility) {
         for(int i = 0; i<recipe.ingredients.size(); i++){
             Ingredient ingredient = recipe.ingredients.get(i);
-            ingredient.setVisibility(true);
+            ingredient.setVisibility(visibility);
             ingredientService.save(ingredient);
         }
     }

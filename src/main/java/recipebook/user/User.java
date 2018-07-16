@@ -5,35 +5,20 @@ import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Entity
-@Table(name = "user")
+@Table(name = "tb_user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "user_id")
     private Long id;
 
     @NotBlank
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "email", nullable = false, updatable = false, unique = true)
+    @Column(nullable = false, updatable = false, unique = true)
     private String email;
 
-    @Column(name = "password")
     private String password;
-
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
-
-    public User(User user) {
-        this.id = user.getId();
-        this.email = user.getEmail();
-        this.name = user.getName();
-        this.password = user.getPassword();
-        this.roles = user.getRoles();
-    }
 
     public User() { }
 
@@ -44,6 +29,7 @@ public class User {
     public void setId(Long id) {
         this.id = id;
     }
+
 
     public String getPassword() {
         return password;
@@ -67,13 +53,5 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
     }
 }
