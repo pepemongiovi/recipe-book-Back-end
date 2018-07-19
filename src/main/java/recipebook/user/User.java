@@ -1,11 +1,19 @@
 package recipebook.user;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import recipebook.ingredient.Ingredient;
+import recipebook.recipe.Recipe;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "tb_user")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class User {
 
     @Id
@@ -20,7 +28,27 @@ public class User {
 
     private String password;
 
+    @Column(name = "recipes")
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="user")
+    public List<Recipe> recipes;
+
+    @Column(name = "shoppingList")
+    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="user")
+    public List<Ingredient> shoppingList;
+
     public User() { }
+
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public List<Ingredient> getShoppingList() {
+        return shoppingList;
+    }
+
+    public void setShoppingList(List<Ingredient> shoppingList) {
+        this.shoppingList = shoppingList;
+    }
 
     public Long getId() {
         return id;
@@ -29,7 +57,6 @@ public class User {
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getPassword() {
         return password;

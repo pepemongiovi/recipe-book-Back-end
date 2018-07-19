@@ -6,11 +6,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.annotations.ApiOperation;
+import recipebook.ingredient.Ingredient;
 import recipebook.responses.ResponseConflict;
 import recipebook.responses.ResponseCreated;
 import recipebook.exceptions.InvalidAttributeException;
 import javax.xml.ws.Response;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -50,16 +52,19 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    @ApiOperation(value = "Delete a user with a given id")
+    @DeleteMapping("/{id}")
+    @ApiOperation(value = "Delete a user by a given id")
     public ResponseEntity delete(@RequestHeader("Authorization") String token, @PathVariable("id") Long id){
         return new ResponseEntity(userService.removeById(id), HttpStatus.OK);
     }
 
-    @GetMapping
-    @ApiOperation(value = "Return all users registered")
-    public List<User> getUsers(@RequestHeader(value = "Authorization") String token) {
-        return this.userService.getUsers();
+    @GetMapping("{email}")
+    @ApiOperation(value = "Get a user by a given email")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        User user = userService.findByEmail(email);
+
+        if(user!=null) return ResponseEntity.ok().body(user);
+        else return ResponseEntity.notFound().build();
     }
 
     private boolean emailExist(String email) {

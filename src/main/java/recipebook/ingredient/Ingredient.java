@@ -2,6 +2,7 @@ package recipebook.ingredient;
 
 import com.fasterxml.jackson.annotation.*;
 import recipebook.recipe.Recipe;
+import recipebook.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -33,11 +34,16 @@ public class Ingredient {
     @ManyToOne(optional = true, fetch=FetchType.LAZY)
     public Recipe recipe;
 
-    public Ingredient(String name, int amount, boolean visible, Recipe recipe) {
+    @JoinColumn(name="id")
+    @ManyToOne(fetch=FetchType.LAZY)
+    public User user;
+
+    public Ingredient(String name, int amount, boolean visible, Recipe recipe, User user) {
         this.name = name;
         this.amount = amount;
         this.recipe = recipe;
         this.visible = visible;
+        this.user = user;
     }
 
     public Ingredient() {}
@@ -45,6 +51,12 @@ public class Ingredient {
     public Long getId() {
         return id;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) { this.user = user; }
 
     public String getName() {
         return name;

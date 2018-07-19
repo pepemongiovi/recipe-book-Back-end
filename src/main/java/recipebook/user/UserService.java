@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import recipebook.ingredient.Ingredient;
 import recipebook.util.Crud;
 
 import java.util.List;
@@ -19,6 +20,10 @@ public class UserService implements Crud<User> {
     public UserService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
+    public User save(User user) {
+        return userRepository.save(user);
     }
 
     @Override

@@ -2,6 +2,7 @@ package recipebook.recipe;
 
 import com.fasterxml.jackson.annotation.*;
 import recipebook.ingredient.Ingredient;
+import recipebook.user.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -34,14 +35,23 @@ public class Recipe {
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="recipe")
     public List<Ingredient> ingredients;
 
-    public Recipe(String name, String description, String imgPath, List<Ingredient> ingredients) {
+    @JoinColumn(name="id")
+    @ManyToOne(fetch=FetchType.LAZY)
+    public User user;
+
+    public Recipe(String name, String description, String imgPath, List<Ingredient> ingredients, User user) {
         this.name = name;
         this.description = description;
         this.imgPath = imgPath;
         this.ingredients = ingredients;
+        this.user = user;
     }
 
     public Recipe() {}
+
+    public User getUser() {
+        return user;
+    }
 
     public Long getId() {
         return id;

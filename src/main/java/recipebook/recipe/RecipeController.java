@@ -1,5 +1,6 @@
 package recipebook.recipe;
 
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,11 +20,13 @@ public class RecipeController {
     RecipeService recipeService;
 
     @GetMapping
+    @ApiOperation(value = "Get all recipes")
     public List<Recipe> getRecipes() {
         return recipeService.findAll();
     }
 
     @GetMapping("{id}")
+    @ApiOperation(value = "Get a recipe by a given id")
     public ResponseEntity<Recipe> getRecipeById(@PathVariable Long id) {
         Optional<Recipe> recipe = recipeService.findById(id);
 
@@ -31,12 +34,22 @@ public class RecipeController {
         else return ResponseEntity.notFound().build();
     }
 
+    @GetMapping("user/{email}")
+    @ApiOperation(value = "Get all recipe's from a user by a given user's email")
+    public ResponseEntity<List<Recipe>> getRecipesByUserEmail(@PathVariable String email) {
+        List<Recipe> recipes = recipeService.getRecipesByUserEmail(email);
+        if(recipes==null) return ResponseEntity.notFound().build();
+        else return ResponseEntity.ok().body(recipes);
+    }
+
     @PostMapping
+    @ApiOperation(value = "Create a recipe")
     public Recipe createRecipe(@Valid @RequestBody Recipe recipe) {
-        return recipeService.save(recipe);
+        return recipeService.createRecipe(recipe);
     }
 
     @DeleteMapping("{id}")
+    @ApiOperation(value = "Delete a recipe by a given id")
     public ResponseEntity<Recipe> deleteRecipe(@PathVariable Long id) {
         Optional<Recipe> recipe = recipeService.findById(id);
 
@@ -48,6 +61,7 @@ public class RecipeController {
     }
 
     @PutMapping("{id}")
+    @ApiOperation(value = "Update a recipe by a given id and recipe object")
     public ResponseEntity<Recipe> updateRecipe(@PathVariable Long id, @RequestBody Recipe updatedRecipe) {
         Optional<Recipe> recipe = recipeService.findById(id);
 
@@ -56,6 +70,7 @@ public class RecipeController {
     }
 
     @PutMapping("{id}/add-ingredients")
+    @ApiOperation(value = "Add all recipe's ingredients to the shopping list")
     public ResponseEntity<Recipe> addIngredientsToShoppingList(@PathVariable Long id) {
         Optional<Recipe> recipe = recipeService.findById(id);
 
@@ -67,6 +82,7 @@ public class RecipeController {
     }
 
     @PutMapping("{id}/remove-ingredients")
+    @ApiOperation(value = "Remove all recipe's ingredients from the shopping list")
     public ResponseEntity<Recipe> removeIngredientsFromShoppingList(@PathVariable Long id) {
         Optional<Recipe> recipe = recipeService.findById(id);
 
