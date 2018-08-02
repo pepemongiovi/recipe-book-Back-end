@@ -1,5 +1,6 @@
 package recipebook.ingredient;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,10 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*")
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/ingredients")
+@Api(value = "Ingredient controller", description="Has all the endpoints related to ingredients")
 public class IngredientController {
 
     @Autowired

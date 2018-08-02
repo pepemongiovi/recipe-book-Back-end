@@ -1,6 +1,7 @@
 package recipebook.ingredient;
 
 import com.fasterxml.jackson.annotation.*;
+import io.swagger.annotations.ApiModelProperty;
 import recipebook.recipe.Recipe;
 import recipebook.user.User;
 
@@ -28,6 +29,7 @@ public class Ingredient {
 
     @NotNull
     @Column(name = "visible")
+    @ApiModelProperty("Ingredient's visibility in shopping list")
     public boolean visible;
 
     @JoinColumn(name="recipe_id")

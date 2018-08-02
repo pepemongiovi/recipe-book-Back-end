@@ -1,5 +1,6 @@
 package recipebook.user;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.SecurityDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,9 +15,10 @@ import javax.xml.ws.Response;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping(value = "/user")
+@CrossOrigin(origins = "*", maxAge = 3600)
+@Api(value = "User controller", description="Has all the endpoints related to user")
 public class UserController {
 
     private UserService userService;
