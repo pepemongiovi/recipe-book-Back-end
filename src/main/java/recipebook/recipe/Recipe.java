@@ -28,9 +28,6 @@ public class Recipe {
     @Column(name = "description")
     public String description;
 
-    @Column(name = "image_path")
-    public String imgPath;
-
     @NotNull
     @Column(name = "ingredients")
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="recipe")
@@ -40,10 +37,9 @@ public class Recipe {
     @ManyToOne(fetch=FetchType.LAZY)
     public User user;
 
-    public Recipe(String name, String description, String imgPath, List<Ingredient> ingredients, User user) {
+    public Recipe(String name, String description, List<Ingredient> ingredients, User user) {
         this.name = name;
         this.description = description;
-        this.imgPath = imgPath;
         this.ingredients = ingredients;
         this.user = user;
     }
@@ -72,14 +68,6 @@ public class Recipe {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getImgPath() {
-        return imgPath;
-    }
-
-    public void setImgPath(String imgPath) {
-        this.imgPath = imgPath;
     }
 
     public List<Ingredient> getIngredients() {
