@@ -8,6 +8,7 @@ import recipebook.recipe.Recipe;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -30,11 +31,17 @@ public class User {
 
     @Column(name = "recipes")
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="user")
-    public List<Recipe> recipes;
+    public List<Recipe> recipes = new ArrayList<>();
 
     @Column(name = "shoppingList")
     @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="user")
-    public List<Ingredient> shoppingList;
+    public List<Ingredient> shoppingList = new ArrayList<>();
+
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
 
     public User() { }
 
